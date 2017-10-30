@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{author.name}}</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
+	<style>
+        table.borderless td {
+            border: none;
+        }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="section columns">
+			<div class="column is-10 is-offset-1">
+                <div class="box">
+                    <h2 class="title">
+                        {{author.preferred-name.given-name}} {{author.preferred-name.surname}}
+                    </h2>
+			  	    <div class="columns">
+                        {{#unless metrics.0.error}}
+                        <div class="column is-3">
+                            <div class="title is-5"><strong>Research Performance</strong></div>
+                            <div class="subtitle is-5">(2012 - 2017)</div>
+                            <table class="table is-narrow borderless">
+                                <tbody>
+                                    {{#each metrics}}
+                                    <tr>
+                                        {{#ifEquals metric.metricType "Collaboration"}}
+                                            <td>{{metric.values.0.collabType}}</td>
+                                            <td>{{metric.values.0.percentage}}%</td>
+                                        {{else}}
+                                            {{#ifEquals metric.metricType "HIndices"}}
+                                                <td>{{metric.indexType}}</td>
+                                            {{else}}
+                                                <td>{{camelCaseToString metric.metricType}}</td>
+                                            {{/ifEquals}}
+                                            <td>{{number metric.value}}</td>
+                                        {{/ifEquals}}
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        {{/unless}}
+                        <div class="column">
+                            <div class="title is-5"><strong>Recent Publication History</strong></div>
+                            <table class="table is-striped is-narrow">
+                                <thead>
+                                    <tr>
+                                        <th>Publication</th>
+                                        <th>Citation Count</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each docs}}
+                                    <tr>
+                                        <td width="70%">
+                                            <a class="abstract" data-eid="{{eid}}">
+                                                {{dc:title}}
+                                            </a>
+                                        </td>
+                                        <td>{{citedby-count}}</td>
+                                        <td>{{prism:coverDate}}</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div id="abstractModal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content"></div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.abstract').click(function() {
+			$.ajax({
+				type: "GET",
+				url: "/abstract/" + $(this).attr('data-eid')
+			}).done(function(data) {
+                $('#abstractModal .modal-content').html(data);
+                $('#abstractModal').addClass('is-active');
+			});
+		});
+	});
+</script>

@@ -1,0 +1,29 @@
+{
+  "name": "apidemo",
+  "version": "1.0.0",
+  "description": "A sample app that demonstrates how to consume the SciVal and Scopus RESTful APIs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ElsevierDev/apidemo"
+  },
+  "keywords": [
+    "restful",
+    "api",
+    "nodejs"
+  ],
+  "author": "Joe Riess",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "handlebars": "^4.0.6",
+    "hapi": "^16.0.2",
+    "request": "^2.79.0",
+    "request-promise": "^4.2.2",
+    "promises-all": "^1.0.0",
+    "vision": "^4.1.1",
+    "handlebars.numeral": "^0.2.0"
+  }
+}

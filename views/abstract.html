@@ -1,0 +1,24 @@
+<div class="box">
+    <article class="media">
+        <div class="media-content">
+            <div class="content">
+                {{#if result.coredata.dc:description}}
+                    <p class="title is-4">{{result.coredata.dc:title}}</p>
+                    <p>{{result.coredata.dc:description}}</p>
+                {{else}}
+                    <p>No abstract available</p>
+                {{/if}}
+        </div>
+    </article>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+        $(".modal-close").click(function() {
+            $("html").removeClass("is-clipped");
+            $("#abstractModal").removeClass("is-active");
+        });
+        $(window).click(function() {
+            $("#abstractModal").removeClass("is-active");
+        });
+	});
+</script>

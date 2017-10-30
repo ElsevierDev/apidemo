@@ -1,0 +1,24 @@
+<table class="table is-bordered is-striped is-narrow">
+    <thead>
+        <tr>
+            <th>Author</th>
+            <th>Affiliation</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each result.entry}}
+        <tr>
+            {{#if eid}}
+            <td>
+                <a href="author/{{removeEIDPrefix eid}}">
+                    {{preferred-name.given-name}} {{preferred-name.surname}}
+                </a>
+            </td>
+            <td>{{affiliation-current.affiliation-name}}</td>
+            {{else}}
+            <td colspan=2>No results found</td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

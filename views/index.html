@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  	<title>A sample app that demonstrate how to consume Elsevier RESTful APIs</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
+	<style>
+		#authorName {
+			width: auto;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="section">
+			<div class="columns">
+				<div class="column is-8 is-offset-4">
+					<div class="field">
+						<label class="label">Author name</label>
+						<input class="input" type="text" size="40" id="authorName">
+						<button class="button is-primary" id="authorSearch">Search</button>
+						<button class="button is-seconary" id="clear">Clear</button>
+					</div>
+				</div>
+			</div>
+			<div class="columns">
+				<div class="column is-8 is-offset-2">
+					<div id="authorResults"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#authorSearch').click(function() {
+			$.ajax({
+				type: "GET",
+				url: "/search",
+				data: {
+					name: $("#authorName").val()
+				}
+			}).done(function(data) {
+				$('#authorResults').html(data);
+			});
+		});
+		$('#authorName').keypress(function(e) {
+			if (e.which == 13) { 
+				$('#authorSearch').click();
+			}
+		});
+		$('#clear').click(function() {
+			$('#authorName').val('');
+			$("#authorResults").empty();
+		});
+
+		myStorage = window.localStorage;
+		var results = myStorage.getItem('authorResults');
+		if (results) {
+        	$("#authorResults").html(results);
+		}
+		$(window).unload(function () {
+        	localStorage.setItem('authorResults', $("#authorResults").html());
+		});
+	});
+</script>
