@@ -6,6 +6,7 @@ const promiseAll = require('promises-all');
 const vision = require('vision');
 const handlebars = require('handlebars');
 const numeralHelper = require("handlebars.numeral");
+const prettyjson = require('prettyjson');
 const config = require('./config');
 
 const server = new hapi.Server();
@@ -47,8 +48,9 @@ server.route({
 		}
 		get(options)
 			.then(function(body) {
-				const data = JSON.parse(body);
-				reply.view('results', {result: data['search-results']});
+				const results = JSON.parse(body)['search-results'];
+				console.log('Search results:\n' + prettyjson.render(results));
+				reply.view('results', {result: results});
 			}).catch(function(error) {
 				throw error;
 			});
@@ -75,7 +77,9 @@ server.route({
 		promises.push(
 			get(options)
 				.then(function(body) {
-					context.metrics = JSON.parse(body).results;
+					const results = JSON.parse(body).results;
+					console.log('Metric results:\n' + prettyjson.render(results));
+					context.metrics = results;
 				}).catch(function(error) {
 					throw error;
 				})
@@ -92,7 +96,9 @@ server.route({
 		promises.push(
 			get(options)
 				.then(function(body) {
-					context.docs = JSON.parse(body)['search-results'].entry;
+					const entry = JSON.parse(body)['search-results'].entry;
+					console.log('Scopus search:\n' +prettyjson.render(entry));
+					context.docs = entry;
 				}).catch(function(error) {
 					throw error;
 				})
@@ -107,7 +113,9 @@ server.route({
 		promises.push(
 			get(options)
 				.then(function(body) {
-					context.author = JSON.parse(body)['author-retrieval-response'][0];
+					const profile = JSON.parse(body)['author-retrieval-response'][0];
+					console.log('Scopus author profile:\n' + prettyjson.render(profile));
+					context.author = profile;
 				}).catch(function(error) {
 					throw error;
 				})
@@ -134,8 +142,9 @@ server.route({
 		}
 		get(options)
 			.then(function(body) {
-				const data = JSON.parse(body);
-				reply.view('abstract', {result: data['abstracts-retrieval-response']});
+				const abstract = JSON.parse(body)['abstracts-retrieval-response'];
+				console.log('Scopus abstract:\n' + prettyjson.render(abstract));
+				reply.view('abstract', {result: abstract});
 			}).catch(function(error) {
 				throw error;
 			})
