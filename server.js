@@ -1,7 +1,7 @@
 'use strict'
 
 const hapi = require('hapi');
-const rp = require('request-promise');
+const get = require('request-promise');
 const promiseAll = require('promises-all');
 const vision = require('vision');
 const handlebars = require('handlebars');
@@ -40,12 +40,12 @@ server.route({
 	method: 'GET',
 	path: '/search',
 	handler: function(request, reply) {
-		var options = getOptions('https://api.elsevier.com/content/search/author');
+		var options = getBasicOptions('https://api.elsevier.com/content/search/author');
 		options.qs = {
 			query: getAuthorQuery(request.query.name),
 			count: 20
 		}
-		rp(options)
+		get(options)
 			.then(function(body) {
 				const data = JSON.parse(body);
 				reply.view('results', {result: data['search-results']});
@@ -65,7 +65,7 @@ server.route({
 
 		// Get the authors metrics from SciVal
 		const authorId = encodeURIComponent(request.params.id);
-		var options = getOptions('https://api.elsevier.com/metrics');
+		var options = getBasicOptions('https://api.elsevier.com/metrics');
 		options.qs = {
 			metrics: 'ScholarlyOutput,CitationCount,hIndices,FieldWeightedCitationImpact,CitationsPerPublication,Collaboration',
 			byYear: false,
@@ -73,7 +73,7 @@ server.route({
 			authors: authorId
 		}
 		promises.push(
-			rp(options)
+			get(options)
 				.then(function(body) {
 					context.metrics = JSON.parse(body).results;
 				}).catch(function(error) {
@@ -90,7 +90,7 @@ server.route({
 			count: 5
 		}
 		promises.push(
-			rp(options)
+			get(options)
 				.then(function(body) {
 					context.docs = JSON.parse(body)['search-results'].entry;
 				}).catch(function(error) {
@@ -105,7 +105,7 @@ server.route({
 			httpAccept: 'application/json'
 		}
 		promises.push(
-			rp(options)
+			get(options)
 				.then(function(body) {
 					context.author = JSON.parse(body)['author-retrieval-response'][0];
 				}).catch(function(error) {
@@ -128,11 +128,11 @@ server.route({
 	path: '/abstract/{id}',
 	handler: function(request, reply) {
 		const eid = encodeURIComponent(request.params.id);
-		var options = getOptions('https://api.elsevier.com/content/abstract/eid/' + eid);
+		var options = getBasicOptions('https://api.elsevier.com/content/abstract/eid/' + eid);
 		options.qs = {
 			httpAccept: 'application/json'
 		}
-		rp(options)
+		get(options)
 			.then(function(body) {
 				const data = JSON.parse(body);
 				reply.view('abstract', {result: data['abstracts-retrieval-response']});
@@ -158,7 +158,7 @@ handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
 numeralHelper.registerHelpers(handlebars);
 
 // Get basic REST API options
-function getOptions(url) {
+function getBasicOptions(url) {
 	return {
 		url: url,
 		headers: {

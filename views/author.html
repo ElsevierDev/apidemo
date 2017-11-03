@@ -32,7 +32,7 @@
                                     <tr>
                                         {{#ifEquals metric.metricType "Collaboration"}}
                                             <td>{{metric.values.0.collabType}}</td>
-                                            <td>{{metric.values.0.percentage}}%</td>
+                                            <td>{{number metric.values.0.percentage}}%</td>
                                         {{else}}
                                             {{#ifEquals metric.metricType "HIndices"}}
                                                 <td>{{metric.indexType}}</td>
@@ -73,6 +73,7 @@
                             </table>
                         </div>
                     </div>
+                    <div><a href="/">Back to results</a></div>
 				</div>
 			</div>
 		</div>
