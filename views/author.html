@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{author.name}}</title>
+    <title>{{metrics.author.name}}</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
 	<style>
@@ -18,9 +18,7 @@
 		<div class="section columns">
 			<div class="column is-10 is-offset-1">
                 <div class="box">
-                    <h2 class="title">
-                        {{author.preferred-name.given-name}} {{author.preferred-name.surname}}
-                    </h2>
+                    <h2 class="title">{{metrics.0.author.name}}</h2>
 			  	    <div class="columns">
                         {{#unless metrics.0.error}}
                         <div class="column is-3">

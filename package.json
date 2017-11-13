@@ -24,6 +24,7 @@
     "request-promise": "^4.2.2",
     "promises-all": "^1.0.0",
     "vision": "^4.1.1",
+    "debug": "^3.1.0",
     "handlebars.numeral": "^0.2.0"
   }
 }

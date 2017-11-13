@@ -7,6 +7,7 @@ const vision = require('vision');
 const handlebars = require('handlebars');
 const numeralHelper = require("handlebars.numeral");
 const prettyjson = require('prettyjson');
+const debug = require('debug')('server');
 const config = require('./config');
 
 const server = new hapi.Server();
@@ -49,7 +50,7 @@ server.route({
 		get(options)
 			.then(function(body) {
 				const results = JSON.parse(body)['search-results'];
-				console.log('Search results:\n' + prettyjson.render(results));
+				debug('Search results:\n' + prettyjson.render(results));
 				reply.view('results', {result: results});
 			}).catch(function(error) {
 				throw error;
@@ -78,7 +79,7 @@ server.route({
 			get(options)
 				.then(function(body) {
 					const results = JSON.parse(body).results;
-					console.log('Metric results:\n' + prettyjson.render(results));
+					debug('Metric results:\n' + prettyjson.render(results));
 					context.metrics = results;
 				}).catch(function(error) {
 					throw error;
@@ -97,30 +98,14 @@ server.route({
 			get(options)
 				.then(function(body) {
 					const entry = JSON.parse(body)['search-results'].entry;
-					console.log('Scopus search:\n' +prettyjson.render(entry));
+					debug('Scopus search:\n' +prettyjson.render(entry));
 					context.docs = entry;
 				}).catch(function(error) {
 					throw error;
 				})
 		);
 
-		// Get the author profile
-		options.url = 'https://api.elsevier.com/content/author/author_id/' + authorId;
-		options.qs = {
-			field: 'surname,given-name',
-			httpAccept: 'application/json'
-		}
-		promises.push(
-			get(options)
-				.then(function(body) {
-					const profile = JSON.parse(body)['author-retrieval-response'][0];
-					console.log('Scopus author profile:\n' + prettyjson.render(profile));
-					context.author = profile;
-				}).catch(function(error) {
-					throw error;
-				})
-		);
-
+		// Execute promises asynchronously
 		promiseAll.all(promises)
 			.then(function() {
 				reply.view('author', context);
@@ -143,7 +128,7 @@ server.route({
 		get(options)
 			.then(function(body) {
 				const abstract = JSON.parse(body)['abstracts-retrieval-response'];
-				console.log('Scopus abstract:\n' + prettyjson.render(abstract));
+				debug('Scopus abstract:\n' + prettyjson.render(abstract));
 				reply.view('abstract', {result: abstract});
 			}).catch(function(error) {
 				throw error;
@@ -166,7 +151,10 @@ handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
 });
 numeralHelper.registerHelpers(handlebars);
 
-// Get basic REST API options
+/**
+ * Get basic REST API options
+ * @param {string} url - The base URL of the REST service to call.
+ */
 function getBasicOptions(url) {
 	return {
 		url: url,
@@ -178,7 +166,10 @@ function getBasicOptions(url) {
 	};
 };
 
-// Get Scopus author query string
+/**
+ * Get Scopus author query string
+ * @param {string} fullName - author full name
+ */
 function getAuthorQuery(fullName) {
 	var firstName = fullName.split(' ').slice(0, -1).join(' ');
 	var lastName = fullName.split(' ').slice(-1).join(' ');
@@ -189,6 +180,7 @@ function getAuthorQuery(fullName) {
 	return query;
 }
 
+// Start the server
 server.start((err) => {
 	if (err) {
 		throw err;
