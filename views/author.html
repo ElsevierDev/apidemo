@@ -90,6 +90,7 @@
 				type: "GET",
 				url: "/abstract/" + $(this).attr('data-eid')
 			}).done(function(data) {
+                // Display modal using Bulma styles
                 $('#abstractModal .modal-content').html(data);
                 $('#abstractModal').addClass('is-active');
 			});

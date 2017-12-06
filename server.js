@@ -1,13 +1,13 @@
 'use strict'
 
-const hapi = require('hapi');
-const get = require('request-promise');
-const promiseAll = require('promises-all');
-const vision = require('vision');
-const handlebars = require('handlebars');
-const numeralHelper = require("handlebars.numeral");
-const prettyjson = require('prettyjson');
-const debug = require('debug')('server');
+const hapi = require('hapi');				// Server framework
+const get = require('request-promise');		// REST client
+const promiseAll = require('promises-all');	// Parallel processing 
+const vision = require('vision');			// View engine for HAPI
+const handlebars = require('handlebars');	// Templating module
+const numeralHelper = require("handlebars.numeral");	// Number formatting
+const prettyjson = require('prettyjson');	// JSON formatting
+const debug = require('debug')('server');	// Debug module
 const config = require('./config');
 
 const server = new hapi.Server();
@@ -75,6 +75,7 @@ server.route({
 			yearRange: '5yrsAndCurrent',
 			authors: authorId
 		}
+		// Add metrics request to list of promises
 		promises.push(
 			get(options)
 				.then(function(body) {
@@ -94,6 +95,7 @@ server.route({
 			sort: 'coverDate',
 			count: 5
 		}
+		// Add pubs request to list of promises
 		promises.push(
 			get(options)
 				.then(function(body) {
