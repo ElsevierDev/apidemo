@@ -1,23 +1,23 @@
 <table class="table is-bordered is-striped is-narrow">
     <thead>
         <tr>
-            <th>Author</th>
-            <th>Affiliation</th>
+            <th>ID</th>
+            <th>Name</th>
         </tr>
     </thead>
     <tbody>
-        {{#each result.entry}}
+        {{#each result}}
         <tr>
-            {{#if eid}}
             <td>
-                <a href="author/{{removeEIDPrefix eid}}">
-                    {{preferred-name.given-name}} {{preferred-name.surname}}
+                <a href="{{../entityType}}/{{id}}">
+                    {{id}}
                 </a>
             </td>
-            <td>{{affiliation-current.affiliation-name}}</td>
-            {{else}}
+            <td>{{name}}</td>
+        </tr>
+        {{else}}
+        <tr>
             <td colspan=2>No results found</td>
-            {{/if}}
         </tr>
         {{/each}}
     </tbody>

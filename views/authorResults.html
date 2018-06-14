@@ -1,0 +1,26 @@
+<table class="table is-bordered is-striped is-narrow">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Affiliation</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each result.entry}}
+        <tr>
+            <td>
+                <a href="author/{{removeEIDPrefix eid}}">
+                    {{removeEIDPrefix eid}}
+                </a>
+            </td>
+            <td>{{preferred-name.given-name}} {{preferred-name.surname}}</td>
+            <td>{{affiliation-current.affiliation-name}}</td>
+        </tr>
+        {{else}}
+        <tr>
+            <td colspan=3>No results found</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

@@ -1,0 +1,23 @@
+<div class="column">
+    <div class="title is-5"><strong>Research Performance</strong></div>
+    <div class="subtitle is-5">({{currentYear 5}} - {{currentYear 0}})</div>
+    <table class="table is-narrow borderless">
+        <tbody>
+            {{#each metrics}}
+            <tr>
+                {{#ifEquals metricType "Collaboration"}}
+                    <td>{{values.0.collabType}}</td>
+                    <td>{{number values.0.percentage}}%</td>
+                {{else}}
+                    {{#ifEquals metricType "HIndices"}}
+                        <td>{{indexType}}</td>
+                    {{else}}
+                        <td>{{camelCaseToString metricType}}</td>
+                    {{/ifEquals}}
+                    <td>{{number value}}</td>
+                {{/ifEquals}}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

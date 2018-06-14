@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{{metrics.author.name}}</title>
+    <title>{{institutionGroup.name}}</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
 	<style>
@@ -19,29 +19,27 @@
 			<div class="column is-10 is-offset-1">
                 <div class="box">
                     {{#if results}}
-                    <h2 class="title">{{results.0.author.name}}</h2>
+                    <h2 class="title">{{institutionGroup.name}}</h2>
                     <div class="columns">
                         {{> metrics metrics=results.0.metrics}}
                         <div class="column">
-                            <div class="title is-5"><strong>Recent Publication History</strong></div>
+                            <div class="title is-5"><strong>Institutions</strong></div>
                             <table class="table is-striped is-narrow">
                                 <thead>
                                     <tr>
-                                        <th>Publication</th>
-                                        <th>Citation Count</th>
-                                        <th>Date</th>
+                                        <th>ID</th>
+                                        <th>Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{#each docs}}
+                                    {{#each institutionGroup.institutions}}
                                     <tr>
-                                        <td width="70%">
-                                            <a class="abstract" data-eid="{{eid}}">
-                                                {{dc:title}}
+                                        <td>
+                                            <a href="/institution/{{id}}">
+                                                {{id}}
                                             </a>
                                         </td>
-                                        <td>{{citedby-count}}</td>
-                                        <td>{{prism:coverDate}}</td>
+                                        <td>{{name}}</td>
                                     </tr>
                                     {{/each}}
                                 </tbody>
@@ -49,31 +47,12 @@
                         </div>
                     </div>
                     {{else}}
-                    <h2 class="title">Author not found</h2>
+                    <h2 class="title">Institution group not found</h2>
                     {{/if}}
-                    <div><a href="/authors">Back to search</a></div>
+                    <div><a href="/institutionGroups">Back to search</a></div>
 				</div>
 			</div>
 		</div>
     </div>
-    <div id="abstractModal" class="modal">
-        <div class="modal-background"></div>
-        <div class="modal-content"></div>
-        <button class="modal-close is-large" aria-label="close"></button>
-    </div>
 </body>
 </html>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.abstract').click(function() {
-			$.ajax({
-				type: "GET",
-				url: "/abstract/" + $(this).attr('data-eid')
-			}).done(function(data) {
-                // Display modal using Bulma styles
-                $('#abstractModal .modal-content').html(data);
-                $('#abstractModal').addClass('is-active');
-			});
-		});
-	});
-</script>
