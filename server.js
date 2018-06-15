@@ -323,6 +323,7 @@ server.route({
 		const eid = encodeURIComponent(request.params.id);
 		var options = getBasicOptions('https://api.elsevier.com/content/abstract/eid/' + eid);
 		options.qs = {
+			view: 'META_ABS',
 			httpAccept: 'application/json'
 		}
 		get(options)
