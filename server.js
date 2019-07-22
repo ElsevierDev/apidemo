@@ -70,6 +70,12 @@ server.route([{
 	handler: function (request, reply) {
 		reply.view('search.html', { entityType: "institutionGroup" });
 	}
+}, {
+	method: 'GET',
+	path: '/topics',
+	handler: function (request, reply) {
+		reply.view('search.html', { entityType: "topic" });
+	}
 }]);
 
 // Submit search
@@ -245,6 +251,9 @@ server.route([{
 	method: 'GET',
 	path: '/institution/{id}',
 	handler: function(request, reply) {
+		var promises = [];
+		var context = {};
+
 		// Get the institution metrics from SciVal
 		const institutionId = encodeURIComponent(request.params.id);
 		var options = getBasicOptions('https://api.elsevier.com/analytics/scival/institution/metrics');
@@ -254,15 +263,44 @@ server.route([{
 			yearRange: '5yrsAndCurrent',
 			institutionIds: institutionId
 		}
-		get(options)
-			.then(function(body) {
-				const results = JSON.parse(body).results;
-				debug('Metric results:\n' + prettyjson.render(results));
-				reply.view('institution', {results: results});
+		// Add metrics request to list of promises
+		promises.push(
+			get(options)
+				.then(function(body) {
+					const results = JSON.parse(body).results;
+					debug('Metric results:\n' + prettyjson.render(results));
+					context.results = results;
+				}).catch(function(error) {
+					throw error;
+				})
+		);
+
+		// Get the topics for the institution
+		options.url = 'https://api.elsevier.com/analytics/scival/topic/institutionId/' + institutionId;
+		options.qs = {
+			yearRange: '5yrsAndCurrent',
+			limit: 5
+		}
+		// Add topics request to list of promises
+		promises.push(
+			get(options)
+				.then(function(body) {
+					const topics = JSON.parse(body).topics;
+					debug('Topic results:\n' + prettyjson.render(topics));
+					context.topics = topics;
+				}).catch(function(error) {
+					throw error;
+				})
+		);
+
+		// Execute promises asynchronously
+		promiseAll.all(promises)
+			.then(function() {
+				reply.view('institution', context);
 			}).catch(function(error) {
 				throw error;
 			})
-		}
+	}
 }, {
 	method: 'GET',
 	path: '/institutionGroup/{id}',
@@ -313,6 +351,28 @@ server.route([{
 				throw error;
 			})
 	}
+}, {
+	method: 'GET',
+	path: '/topic/{id}',
+	handler: function(request, reply) {
+		// Get the topic metrics from SciVal
+		const topicId = encodeURIComponent(request.params.id);
+		var options = getBasicOptions('https://api.elsevier.com/analytics/scival/topic/metrics');
+		options.qs = {
+			metricTypes: 'ScholarlyOutput,CitationCount,FieldWeightedCitationImpact,InstitutionCount',
+			byYear: false,
+			yearRange: '5yrsAndCurrent',
+			topicIds: topicId
+		}
+		get(options)
+			.then(function(body) {
+				const results = JSON.parse(body).results;
+				debug('Metric results:\n' + prettyjson.render(results));
+				reply.view('topic', {results: results});
+			}).catch(function(error) {
+				throw error;
+			})
+		}
 }]);
 
 // Show a particular abstact
