@@ -20,6 +20,7 @@
   "dependencies": {
     "handlebars": "^4.0.6",
     "hapi": "^16.0.2",
+    "prettyjson": "^1.2.1",
     "request": "^2.79.0",
     "request-promise": "^4.2.2",
     "promises-all": "^1.0.0",
